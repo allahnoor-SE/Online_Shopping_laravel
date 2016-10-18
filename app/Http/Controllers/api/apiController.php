@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -15,8 +16,24 @@ class apiController extends Controller
 {
 
     public function index(){
+       // $products = DB::table('products')->select('SELECT p.*,IF(p.id = wish.product_id,1,0) AS status FROM products as p LEFT JOIN `wishlists` as wish ON wish.product_id = p.id and product_id AND wish.user_id = 1');
         $products = Product::all();
         return response()->json(compact('products'));
+
+    }
+
+    public function register(Request $request){
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $password = $request->get('password');
+
+        $user = new User();
+        $user->name = $name;
+        $user->email = $email;
+        $user->password = \Hash::make($password);
+        $user->save();
+
+        return response()->json(['message' => 'Registered Successfully'], 200);
     }
 
 
@@ -40,11 +57,8 @@ class apiController extends Controller
 
     public function addToWishlist($id)
     {
-        $user_id = Auth::user()->id;
-
-        $user = User::find($user_id);
-
-        $user->wishlists()->attach($id);
+        
+        Auth::user()->wishlists()->attach($id);
 
         return response()->json(['message' => 'Successfully Added'], 200);
     }
