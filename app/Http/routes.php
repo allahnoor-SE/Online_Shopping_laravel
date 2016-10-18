@@ -30,6 +30,8 @@ Route::post('store', 'ProductController@store');
 Route::resource('product','ProductController');
 
 
+Route::get('product/edit/{id}', 'BlogController@edit');
+
 
 Route::group(['middleware' => 'guest'] , function(){
 Route::get('/signup',[

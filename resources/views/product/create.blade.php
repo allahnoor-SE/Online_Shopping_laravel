@@ -2,17 +2,45 @@
 
 @section('content')
 
+<div class="panel panel-default" style="margin-top: 50px;">
 
+  <div class="panel-heading">
+    <h3>Creating Product</h3></div>
+  <div class="panel-body">
+    <form action="{{ url('store')}}" method="POST" enctype="multipart/form-data">
+      {{ csrf_field()}}
+
+      <div class="form-group">
+        <label for="image">Image</label>
+        <input class="form-control" type="file"  name="icon" id="image">
+      </div>
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input class="form-control" type="text" name="title" placeholder="title " id="title">
+      </div>
+      <div class="form-group">
+        <label for="Description">Description</label>
+        <input class="form-control" type="text" name="Description" placeholder="Description" id="Description">
+      </div>
+      <div class="form-group">
+        <label for="Price">Price</label>
+        <input class="form-control" type="text" name="Price" placeholder="Price" id="Price">
+      </div>
+
+
+
+
+      <input type="submit" name="submit" value="submit" ><br>
+    </form>
+  </div>
+  <div class="panel-footer"></div>
+
+
+</div>
   
 
-<form action="{{ url('store')}}" method="POST" enctype="multipart/form-data">
-{{ csrf_field()}}
-  <input type="file"  name="icon"><br>
-  <input type="text" name="title">
-   <input type="text" name="description">
-    <input type="text" name="price">
-  <input type="submit" name="submit" value="submit" >
-</form>
+
 
 
 
