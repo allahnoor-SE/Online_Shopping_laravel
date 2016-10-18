@@ -66,8 +66,6 @@ Route::get('/logout',[
 });
 
 
-
-
 Route::get('/home', 'HomeController@index');
 
 Route::get('/mycards' , 'HomeController@mycards');
