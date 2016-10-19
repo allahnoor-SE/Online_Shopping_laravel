@@ -41,6 +41,7 @@ Route::group(['namespace' => 'api', 'prefix' => 'api'], function()
 		Route::get('carts', 'apiController@carts');
 	});
 
+	Route::post('register', 'apiController@register');
 	Route::post('login', 'apiController@authenticate');
 	Route::get('products', 'apiController@index');
 
