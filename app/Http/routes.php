@@ -3,7 +3,7 @@ Route::auth();
 
 
 Route::group(['middleware' => 'auth'],function(){
- 
+
 //route for logout
 Route::get('/logout',['as' => 'logout', 'uses' => 'UserController@logout']);
 
@@ -11,7 +11,9 @@ Route::get('/logout',['as' => 'logout', 'uses' => 'UserController@logout']);
 Route::resource('product','ProductController');
 Route::get('product/create', 'ProductController@create');
 Route::post('product/store', 'ProductController@store');
-
+Route::get('product/edit/{id}', 'ProductController@edit');
+Route::post('product/update/{id}', 'ProductController@update');
+	Route::get('product/destroy/{id}', 'ProductController@delete');
 //route for checkout an product
 Route::get('/checkout',['as' => 'checkout','uses' => 'ProductController@getcheckout']);
 Route::post('/checkout',['as' => 'checkout','uses' => 'ProductController@postcheckout']);
@@ -73,6 +75,6 @@ Route::get('men/men', 'MenController@men');
 //contact page route
 Route::get('contact','HomeController@contact');
 
-//Home page route	
+//Home page route
 Route::get('/',['as' => 'product.index' , 'uses' => 'ProductController@index']);
 

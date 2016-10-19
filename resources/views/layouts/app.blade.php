@@ -27,10 +27,14 @@
                   <li><a href="{{ url('/register')}}">Register</a></li>
                   <!-- <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li> -->
             @else
+               @if(Auth::user()->role == 1)
                   <li class="hidden-xs"><a href="{{url('product/create')}}">Dashboord</a></li>
-                  <li class="hidden-xs"><a href="{{url('/logout')}}">Logout</a></li>
+                      <li class="hidden-xs"><a href="{{url('/logout')}}">Logout</a></li>
+                    @else
+                      <li class="hidden-xs"><a href="{{url('/logout')}}">Logout</a></li>
                   <li class="hidden-xs"><a href="{{url('/wish_list')}}">Wishlist<span class="badge">{{Session::has('wish') ? Session::get('wish')->totalQty : ''}}</span></a></li>
                   <li class="hidden-xs"><a href="{{url('/shopping-cart')}}">My Cart</a></li>
+                 @endif
             @endif
                </ul>
               </div>

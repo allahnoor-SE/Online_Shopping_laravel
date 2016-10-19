@@ -29,6 +29,7 @@ public function index()
        return view('shop.index')->withProducts($products);
     }
 
+
 public function getAddToCart(Request $request, $id){
 
         $product = Product::find($id);
@@ -117,30 +118,54 @@ public function getwishlist(){
 
 }
 
-
-
-
-
-
-
-
-
-    public function edit($id)
-    {
-    $product = new Product;
-    return view('product.edit')->with('product',$product);
-    }
-
     public function create(){
 
-           if (Auth::user()->role != 1) {
-        return response()->view('errors.503');
-    }
+        if (Auth::user()->role != 1) {
+            return response()->view('errors.503');
+        }
         $products = new Product;
         $data = $products->get();
         return view('Product.create')->with('data',$data);
-      
+
     }
+    public function edit($id)
+    {
+    $product = Product::find($id);
+    return view('product.edit')->with('product',$product);
+    }
+
+    public function update(Request $request, $id){
+        $title = $request->get('title');
+        $desc = $request->get('description');
+        $price = $request->get('price');
+
+        $product = Product::find($id);
+
+
+        $image = $request->file('imagePath');
+        $filename  = time() . '.' . $image->getClientOriginalExtension();
+        $request->file('imagePath')->move(
+            base_path() . '/public/img/', $filename
+        );
+
+        $product->title = $title;
+        $product->description = $desc;
+        $product->price = $price;
+        $product->imagePath = $filename;
+        $product->update();
+
+        return redirect('product/create');
+
+    }
+
+    public function delete($id){
+        $product = Product::find($id);
+        $product->delete();
+
+        return redirect('product/create');
+    }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -194,7 +219,7 @@ public function getwishlist(){
     }
 
     public function men(){
-        $products = Product::where($category_id, 1);
+        $products = Product::where('category_id', 1);
         return view('shop.index',compact('products'));
     }
 

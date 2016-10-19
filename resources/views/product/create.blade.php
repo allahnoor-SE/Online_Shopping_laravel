@@ -11,10 +11,10 @@
   <input type="text" name="title">
    <input type="text" name="description">
     <input type="text" name="price">
-  
+
   <select name="category_id">
             <option>Select Category</option>
-          
+
             <option value="{{1}}" id="classes" >Men</option>
             <option value="{{2}}" id="classes" >Women</option>
             <option value="{{3}}" id="classes" >Kids</option>
@@ -24,7 +24,7 @@
 
     <select name="type_id">
             <option>Select Type</option>
-          
+
             <option value="{{1}}" id="classes" >Formal</option>
             <option value="{{2}}" id="classes" >Sport</option>
             <option value="{{3}}" id="classes" >Shirt</option>
@@ -64,8 +64,8 @@
                           <td>{{$product->title}}</td>
                           <td>{{$product->description}}</td>
                           <td>${{$product->price}}</td>
-                          <td><a  href="{{url('product.edit',$product->id)}}">Edit</a>
-                          <a href="{{url('product.destroy',$product->id)}}">Delet</a>
+                          <td><a  href="{{url('product/edit',$product->id)}}">Edit</a>
+                          <a href="{{url('product/destroy',$product->id)}}">Delete</a>
                     
                         </tr>
                       @endforeach
@@ -75,11 +75,7 @@
                     </table>
                   </div>
                 
-                  <div class="aa-payment-method">                    
-                   
-                      
-                    <input type="submit" value="Place Order" class="aa-browse-btn">                
-                  </div>
+
                 </div>
               </div>
 
