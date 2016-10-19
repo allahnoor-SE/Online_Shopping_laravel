@@ -2,45 +2,40 @@
 
 @section('content')
 
-<div class="panel panel-default" style="margin-top: 50px;">
 
-  <div class="panel-heading">
-    <h3>Creating Product</h3></div>
-  <div class="panel-body">
-    <form action="{{ url('store')}}" method="POST" enctype="multipart/form-data">
-      {{ csrf_field()}}
-
-      <div class="form-group">
-        <label for="image">Image</label>
-        <input class="form-control" type="file"  name="icon" id="image">
-      </div>
-
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input class="form-control" type="text" name="title" placeholder="title " id="title">
-      </div>
-      <div class="form-group">
-        <label for="Description">Description</label>
-        <input class="form-control" type="text" name="Description" placeholder="Description" id="Description">
-      </div>
-      <div class="form-group">
-        <label for="Price">Price</label>
-        <input class="form-control" type="text" name="Price" placeholder="Price" id="Price">
-      </div>
-
-
-
-
-      <input type="submit" name="submit" value="submit" ><br>
-    </form>
-  </div>
-  <div class="panel-footer"></div>
-
-
-</div>
   
 
+<form action="{{ url('product/store')}}" method="POST" enctype="multipart/form-data">
+{{ csrf_field()}}
+  <input type="file"  name="icon"><br>
+  <input type="text" name="title">
+   <input type="text" name="description">
+    <input type="text" name="price">
 
+  <select name="category_id">
+            <option>Select Category</option>
+
+            <option value="{{1}}" id="classes" >Men</option>
+            <option value="{{2}}" id="classes" >Women</option>
+            <option value="{{3}}" id="classes" >Kids</option>
+           <!--  <option value="{{4}}" id="classes" >Drass</option> -->
+
+  </select>
+
+    <select name="type_id">
+            <option>Select Type</option>
+
+            <option value="{{1}}" id="classes" >Formal</option>
+            <option value="{{2}}" id="classes" >Sport</option>
+            <option value="{{3}}" id="classes" >Shirt</option>
+            <option value="{{4}}" id="classes" >T_Shirt</option>
+            <option value="{{5}}" id="classes" >Jeans</option>
+            <option value="{{6}}" id="classes" >Suit</option>
+            <option value="{{7}}" id="classes" >Shose</option>
+
+  </select>
+  <input type="submit" name="submit" value="submit" >
+</form>
 
 
 
@@ -64,13 +59,13 @@
                   
                         <tr>
                           <td>{{$product->id}} </td>
-                          <td><img  style="width: 100px" src="{{ $product->imagePath}}"></td>
+                          <td><img  style="width: 100px" src="../{{ $product->imagePath}}"></td>
                         
                           <td>{{$product->title}}</td>
                           <td>{{$product->description}}</td>
                           <td>${{$product->price}}</td>
                           <td><a  href="{{url('product/edit',$product->id)}}">Edit</a>
-                          <a href="{{url('product.destroy',$product->id)}}">Delet</a>
+                          <a href="{{url('product/destroy',$product->id)}}">Delete</a>
                     
                         </tr>
                       @endforeach
@@ -80,11 +75,7 @@
                     </table>
                   </div>
                 
-                  <div class="aa-payment-method">                    
-                   
-                      
-                    <input type="submit" value="Place Order" class="aa-browse-btn">                
-                  </div>
+
                 </div>
               </div>
 

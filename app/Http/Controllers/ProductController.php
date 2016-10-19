@@ -14,6 +14,7 @@ use Image;
 use Illuminate\Support\Facades\Input;
 use Stripe\Stripe;
 use Stripe\Charge;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -27,6 +28,7 @@ public function index()
        $products = Product::all();
        return view('shop.index')->withProducts($products);
     }
+
 
 public function getAddToCart(Request $request, $id){
 
@@ -116,26 +118,54 @@ public function getwishlist(){
 
 }
 
-
-
-
-
-
-
-
-
-    public function edit($id)
-    {
-    $product = new Product;
-    return view('product.edit')->with('product',$product);
-    }
-
     public function create(){
+
+        if (Auth::user()->role != 1) {
+            return response()->view('errors.503');
+        }
         $products = new Product;
         $data = $products->get();
         return view('Product.create')->with('data',$data);
-      
+
     }
+    public function edit($id)
+    {
+    $product = Product::find($id);
+    return view('product.edit')->with('product',$product);
+    }
+
+    public function update(Request $request, $id){
+        $title = $request->get('title');
+        $desc = $request->get('description');
+        $price = $request->get('price');
+
+        $product = Product::find($id);
+
+
+        $image = $request->file('imagePath');
+        $filename  = time() . '.' . $image->getClientOriginalExtension();
+        $request->file('imagePath')->move(
+            base_path() . '/public/img/', $filename
+        );
+
+        $product->title = $title;
+        $product->description = $desc;
+        $product->price = $price;
+        $product->imagePath = $filename;
+        $product->update();
+
+        return redirect('product/create');
+
+    }
+
+    public function delete($id){
+        $product = Product::find($id);
+        $product->delete();
+
+        return redirect('product/create');
+    }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -146,11 +176,17 @@ public function getwishlist(){
      */
      public function store(Request $request)
     {
+
+             if (Auth::user()->role != 1) {
+        return response()->view('errors.503');
+    }
        
         $product = new Product; 
         $product->title = $request->title;
          $product->description = $request->description;
-         $product->price = $request->price;    
+         $product->price = $request->price; 
+         $product->category_id = $request->category_id;
+         $product->type_id = $request->type_id;   
         if($request->hasFile('icon')){
              $image = $request->file('icon');
              $filename  = time() . '.' . $image->getClientOriginalExtension();
@@ -171,13 +207,19 @@ public function getwishlist(){
 
 
 
-    public function destroy($id)
+      public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+        $path = asset('img/').'/'.$product->image;
+        Storage::delete($path);
+        $product->delete();
+        
+        session()->flash('delete_message', 'flash_message');
+        return redirect()->back();
     }
 
     public function men(){
-        $products = Product::where($category_id, 1);
+        $products = Product::where('category_id', 1);
         return view('shop.index',compact('products'));
     }
 
