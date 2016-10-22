@@ -16,7 +16,7 @@ class apiController extends Controller
 {
 
     public function index(){
-       // $products = DB::table('products')->select('SELECT p.*,IF(p.id = wish.product_id,1,0) AS status FROM products as p LEFT JOIN `wishlists` as wish ON wish.product_id = p.id and product_id AND wish.user_id = 1');
+
         $products = Product::all();
         return response()->json(compact('products'));
 
@@ -53,6 +53,12 @@ class apiController extends Controller
 
         // all good so return the token
         return response()->json(compact('token'));
+    }
+
+    public function authProducts(){
+        $products = DB::select("SELECT p.*, IF(p.id = wish.product_id,1,0) AS status FROM products as p LEFT JOIN `wishlists` as wish ON wish.product_id = p.id AND product_id AND wish.user_id = 1");
+
+        return response()->json(compact('products'));
     }
 
     public function addToWishlist($id)
@@ -114,5 +120,22 @@ class apiController extends Controller
         return response()->json(['message' => 'Successfully Removed'], 200);
     }
 
+    public function men(){
+        $products = Product::where('category_id',1)->get();
+        return response()->json(compact('products'));
+    }
 
+    public function women(){
+        $products = Product::where('category_id',2)->get();
+        return response()->json(compact('products'));
+    }
+
+    public function kid(){
+        $products = Product::where('category_id',3)->get();
+        return response()->json(compact('products'));
+    }
+
+    public function order(){
+
+    }
 }

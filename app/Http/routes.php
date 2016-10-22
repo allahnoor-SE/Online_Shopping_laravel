@@ -39,11 +39,16 @@ Route::group(['namespace' => 'api', 'prefix' => 'api'], function()
 		Route::post('addToCart/{id}', 'apiController@addToCart');
 		Route::post('removeFromCart/{id}', 'apiController@removeFromCart');
 		Route::get('carts', 'apiController@carts');
+		Route::get('user/products', 'apiController@authProducts');
+
 	});
 
 	Route::post('register', 'apiController@register');
 	Route::post('login', 'apiController@authenticate');
 	Route::get('products', 'apiController@index');
+	Route::get('men', 'apiController@men');
+	Route::get('women', 'apiController@women');
+	Route::get('kid', 'apiController@kid');
 
 });
 
