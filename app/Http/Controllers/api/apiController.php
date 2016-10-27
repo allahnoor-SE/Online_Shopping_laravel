@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -23,14 +24,11 @@ class apiController extends Controller
     }
 
     public function register(Request $request){
-        $name = $request->get('name');
-        $email = $request->get('email');
-        $password = $request->get('password');
 
         $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-        $user->password = \Hash::make($password);
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
+        $user->password = \Hash::make($request->get('password'));
         $user->save();
 
         return response()->json(['message' => 'Registered Successfully'], 200);
@@ -63,10 +61,18 @@ class apiController extends Controller
 
     public function addToWishlist($id)
     {
-        
-        Auth::user()->wishlists()->attach($id);
+        $user = Auth::user();
+        $user_carts = $user->wishlists->lists('id')->toArray();
+        if(in_array($id, $user_carts)){
 
-        return response()->json(['message' => 'Successfully Added'], 200);
+            return response()->json(['message' => 'Already Added'], 200);
+        }
+        else{
+
+            $user->wishlists()->sync([$id]);
+
+            return response()->json(['message' => 'Successfully Added'], 200);
+        }
     }
 
     public function wishlists()
@@ -91,13 +97,23 @@ class apiController extends Controller
 
     public function addToCart($id)
     {
-        $user_id = Auth::user()->id;
 
-        $user = User::find($user_id);
+        $user = Auth::user();
+        $user_carts = $user->carts->lists('id')->toArray();
+        if(in_array($id, $user_carts)){
 
-        $user->carts()->attach($id);
+            return response()->json(['message' => 'Already Added'], 200);
+        }
+        else{
 
-        return response()->json(['message' => 'Successfully Added'], 200);
+            $user->wishlists()->sync([$id]);
+
+            return response()->json(['message' => 'Successfully Added'], 200);
+        }
+
+
+
+       // Auth::user()->carts()->sync([$id], false);
     }
 
     public function carts()
@@ -135,7 +151,51 @@ class apiController extends Controller
         return response()->json(compact('products'));
     }
 
-    public function order(){
+    public function order(Request $request, $id){
 
+        $number = $request->get('number');
+        $amount = $request->get('amount');
+        $address = $request->get('address');
+        $color = $request->get('color');
+        $size = $request->get('size');
+
+        $user = Auth::user();
+
+        $user_orders = $user->orders->lists('id')->toArray();
+        if(in_array($id, $user_orders)){
+
+            return response()->json(['message' => 'Already Ordered'], 200);
+        }
+        else{
+
+            Auth::user()->orders()->attach($id, ['amount' => $amount, 'color' => $color, 'size' => $size,
+                'contact' => $number, 'address' => $address]);
+
+            return response()->json(['message' => 'Successfully Ordered'], 200);
+        }
+    }
+
+    // user orders
+    public function orders(){
+        $orders = Auth::user()->orders;
+
+        return response()->json(compact('orders'));
+    }
+
+    // search for product
+    public function search()
+    {
+        $searchterm = Input::get('keyword');
+        if ($searchterm){
+
+            $products = DB::table('products');
+            $results = $products->where('title', 'LIKE', '%'. $searchterm .'%')
+                ->orWhere('description', 'LIKE', '%'. $searchterm .'%')
+                ->orWhere('price', 'LIKE', '%'. $searchterm .'%')
+                ->get();
+
+            return response()->json(compact('results'));
+
+        }
     }
 }
